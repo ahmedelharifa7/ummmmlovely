@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Piano - Minimalist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --border: #2a2a2a;
+            --text: #e8e8e8;
+            --text-dim: #888;
+            --accent: #c41e3a;
+            --accent-dim: #8b0000;
+            --gold: #d4af37;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Minimal Snowflakes */
+        .snowflakes {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.6rem;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(180deg); }
+        }
+
+        /* Minimal Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav {
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 40px 60px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .hero-subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 60px;
+        }
+
+        /* Piano Player */
+        .piano-player {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .song-info h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .song-meta {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .main-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-dim);
+            transform: scale(1.05);
+        }
+
+        .control-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+
+        .control-btn.secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* Song List */
+        .song-list {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .song-item {
+            padding: 15px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .song-item:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .song-item.active {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .song-item-info h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .song-item-info p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .song-duration {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-family: 'Inter', monospace;
+        }
+
+        /* Progress */
+        .progress-section {
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-family: 'Inter', monospace;
+        }
+
+        /* Piano Keyboard */
+        .piano-keyboard {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: 12px;
+            padding: 20px 15px;
+            margin-bottom: 25px;
+        }
+
+        .piano-keys {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            height: 100px;
+        }
+
+        .piano-key {
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .piano-key.white {
+            width: 32px;
+            height: 100px;
+            background: linear-gradient(180deg, #fafafa 0%, #e8e8e8 100%);
+            border: 1px solid #ccc;
+            border-radius: 0 0 4px 4px;
+            margin: 0 1px;
+            z-index: 1;
+        }
+
+        .piano-key.white:hover {
+            background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
+        }
+
+        .piano-key.white.active {
+            background: linear-gradient(180deg, var(--gold), #b8941f);
+            transform: translateY(2px);
+        }
+
+        .piano-key.black {
+            position: absolute;
+            width: 22px;
+            height: 60px;
+            background: linear-gradient(180deg, #2a2a2a 0%, #0a0a0a 100%);
+            border-radius: 0 0 3px 3px;
+            z-index: 2;
+        }
+
+        .piano-key.black:hover {
+            background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+        }
+
+        .piano-key.black.active {
+            background: linear-gradient(180deg, var(--accent), var(--accent-dim));
+            transform: translateY(2px);
+        }
+
+        /* Controls Row */
+        .controls-row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            min-width: 50px;
+        }
+
+        .slider {
+            width: 100px;
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--gold);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--gold);
+            border-radius: 50%;
+            border: none;
+        }
+
+        .control-value {
+            font-size: 0.8rem;
+            color: var(--gold);
+            min-width: 40px;
+            text-align: right;
+            font-family: 'Inter', monospace;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn:hover, .toggle-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* Keyboard Hint */
+        .keyboard-hint {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 15px 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .hero {
+                padding: 80px 20px 40px;
+            }
+
+            .piano-player {
+                padding: 25px 20px;
+            }
+
+            .player-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .controls-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .control-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .slider {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="snowflakes" id="snowflakes"></div>
+
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">🎹 Christmas Piano</a>
+            <nav>
+                <a href="#player">Player</a>
+                <a href="#library">Library</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Holiday Melodies</h1>
+            <p class="hero-subtitle">Experience Christmas through minimalist piano arrangements</p>
+
+            <div class="piano-player">
+                <div class="player-header">
+                    <div class="song-info">
+                        <h2 id="currentSongTitle">Silent Night</h2>
+                        <p class="song-meta" id="currentSongMeta">Traditional • Peaceful</p>
+                    </div>
+                    <div class="main-controls">
+                        <button class="control-btn secondary" id="prevBtn">◀</button>
+                        <button class="control-btn" id="playBtn">▶</button>
+                        <button class="control-btn secondary" id="nextBtn">▶</button>
+                    </div>
+                </div>
+
+                <div class="song-list" id="songList"></div>
+
+                <div class="progress-section">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">0:00</span>
+                    </div>
+                </div>
+
+                <div class="piano-keyboard">
+                    <div class="piano-keys" id="pianoKeys"></div>
+                </div>
+
+                <div class="controls-row">
+                    <div class="control-group">
+                        <span class="control-label">Speed</span>
+                        <input type="range" class="slider" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+                        <span class="control-value" id="speedValue">1.0x</span>
+                    </div>
+                    <div class="control-group">
+                        <span class="control-label">Volume</span>
+                        <input type="range" class="slider" id="volumeSlider" min="0" max="1" step="0.1" value="0.7">
+                        <span class="control-value" id="volumeValue">70%</span>
+                    </div>
+                    <button class="toggle-btn" id="repeatBtn">🔁 Repeat</button>
+                </div>
+
+                <div class="keyboard-hint">
+                    Press Space to play/pause • Use Z-M and Q-U keys to play piano
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Audio Engine
+        class AudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.masterGain = null;
+                this.volume = 0.7;
+            }
+
+            init() {
+                if (this.ctx) return;
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                this.masterGain = this.ctx.createGain();
+                this.masterGain.gain.value = this.volume * 0.6;
+                this.masterGain.connect(this.ctx.destination);
+            }
+
+            setVolume(val) {
+                this.volume = val;
+                if (this.masterGain) this.masterGain.gain.value = val * 0.6;
+            }
+
+            noteToFreq(note) {
+                const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                const name = note.slice(0, -1);
+                const octave = parseInt(note.slice(-1));
+                const semitone = notes.indexOf(name);
+                const midi = (octave + 1) * 12 + semitone;
+                return 440 * Math.pow(2, (midi - 69) / 12);
+            }
+
+            playNote(note, duration = 0.5) {
+                this.init();
+                const freq = this.noteToFreq(note);
+                const now = this.ctx.currentTime;
+
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc1.type = 'triangle';
+                osc1.frequency.value = freq;
+                osc2.type = 'sine';
+                osc2.frequency.value = freq * 2;
+
+                const g1 = this.ctx.createGain();
+                const g2 = this.ctx.createGain();
+                g1.gain.value = 0.6;
+                g2.gain.value = 0.15;
+
+                osc1.connect(g1);
+                osc2.connect(g2);
+                g1.connect(gain);
+                g2.connect(gain);
+                gain.connect(this.masterGain);
+
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.7, now + 0.04);
+                gain.gain.setValueAtTime(0.7, now + duration * 1.1 - 0.15);
+                gain.gain.linearRampToValueAtTime(0, now + duration * 1.1);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + duration * 1.1 + 0.1);
+                osc2.stop(now + duration * 1.1 + 0.1);
+            }
+        }
+
+        // Song Library with more variety
+        const songLibrary = [
+            {
+                title: "Silent Night",
+                meta: "Traditional • Peaceful",
+                duration: 28,
+                notes: [
+                    {note: 'G4', duration: 0.8}, {note: 'A4', duration: 0.4}, {note: 'G4', duration: 0.8},
+                    {note: 'E4', duration: 1.2}, {note: 'G4', duration: 0.8}, {note: 'A4', duration: 0.4},
+                    {note: 'G4', duration: 0.8}, {note: 'E4', duration: 1.2}, {note: 'D5', duration: 0.8},
+                    {note: 'D5', duration: 0.4}, {note: 'B4', duration: 1.2}, {note: 'C5', duration: 0.8},
+                    {note: 'C5', duration: 0.4}, {note: 'G4', duration: 1.2}, {note: 'A4', duration: 0.8},
+                    {note: 'A4', duration: 0.4}, {note: 'C5', duration: 0.6}, {note: 'B4', duration: 0.4},
+                    {note: 'A4', duration: 0.8}, {note: 'G4', duration: 0.8}, {note: 'A4', duration: 0.4},
+                    {note: 'G4', duration: 0.8}, {note: 'E4', duration: 1.2}
+                ]
+            },
+            {
+                title: "Jingle Bells",
+                meta: "Traditional • Upbeat",
+                duration: 22,
+                notes: [
+                    {note: 'E4', duration: 0.3}, {note: 'E4', duration: 0.3}, {note: 'E4', duration: 0.6},
+                    {note: 'E4', duration: 0.3}, {note: 'E4', duration: 0.3}, {note: 'E4', duration: 0.6},
+                    {note: 'E4', duration: 0.3}, {note: 'G4', duration: 0.3}, {note: 'C4', duration: 0.4},
+                    {note: 'D4', duration: 0.3}, {note: 'E4', duration: 1.0}, {note: 'F4', duration: 0.3},
+                    {note: 'F4', duration: 0.3}, {note: 'F4', duration: 0.4}, {note: 'F4', duration: 0.3},
+                    {note: 'F4', duration: 0.3}, {note: 'E4', duration: 0.3}, {note: 'E4', duration: 0.3},
+                    {note: 'E4', duration: 0.2}, {note: 'E4', duration: 0.3}, {note: 'D4', duration: 0.3},
+                    {note: 'D4', duration: 0.3}, {note: 'E4', duration: 0.4}, {note: 'D4', duration: 0.5},
+                    {note: 'G4', duration: 0.8}
+                ]
+            },
+            {
+                title: "O Holy Night",
+                meta: "Adolphe Adam • Majestic",
+                duration: 32,
+                notes: [
+                    {note: 'C4', duration: 0.5}, {note: 'F4', duration: 1.0}, {note: 'F4', duration: 0.5},
+                    {note: 'G4', duration: 0.8}, {note: 'A4', duration: 0.6}, {note: 'A#4', duration: 1.2},
+                    {note: 'A#4', duration: 0.5}, {note: 'D5', duration: 1.0}, {note: 'C5', duration: 0.5},
+                    {note: 'A#4', duration: 1.5}, {note: 'F4', duration: 0.5}, {note: 'G4', duration: 1.0},
+                    {note: 'F4', duration: 0.5}, {note: 'E4', duration: 1.5}, {note: 'C4', duration: 0.5},
+                    {note: 'F4', duration: 1.0}, {note: 'F4', duration: 0.5}, {note: 'G4', duration: 0.8},
+                    {note: 'A4', duration: 0.6}, {note: 'A#4', duration: 1.2}, {note: 'A#4', duration: 0.5},
+                    {note: 'A#4', duration: 0.5}, {note: 'A4', duration: 0.5}, {note: 'G4', duration: 0.5},
+                    {note: 'F4', duration: 2.0}
+                ]
+            },
+            {
+                title: "We Wish You",
+                meta: "Traditional • Cheerful",
+                duration: 24,
+                notes: [
+                    {note: 'G4', duration: 0.3}, {note: 'C5', duration: 0.3}, {note: 'C5', duration: 0.2},
+                    {note: 'D5', duration: 0.2}, {note: 'C5', duration: 0.2}, {note: 'B4', duration: 0.2},
+                    {note: 'A4', duration: 0.4}, {note: 'A4', duration: 0.4}, {note: 'A4', duration: 0.3},
+                    {note: 'D5', duration: 0.3}, {note: 'D5', duration: 0.2}, {note: 'E5', duration: 0.2},
+                    {note: 'D5', duration: 0.2}, {note: 'C5', duration: 0.2}, {note: 'B4', duration: 0.4},
+                    {note: 'G4', duration: 0.4}, {note: 'G4', duration: 0.3}, {note: 'E5', duration: 0.3},
+                    {note: 'E5', duration: 0.2}, {note: 'F5', duration: 0.2}, {note: 'E5', duration: 0.2},
+                    {note: 'D5', duration: 0.2}, {note: 'C5', duration: 0.4}, {note: 'A4', duration: 0.4},
+                    {note: 'G4', duration: 0.2}, {note: 'G4', duration: 0.2}, {note: 'A4', duration: 0.3},
+                    {note: 'D5', duration: 0.3}, {note: 'B4', duration: 0.4}, {note: 'C5', duration: 0.8}
+                ]
+            },
+            {
+                title: "Deck the Halls",
+                meta: "Traditional Welsh • Festive",
+                duration: 20,
+                notes: [
+                    {note: 'D5', duration: 0.3}, {note: 'C5', duration: 0.3}, {note: 'B4', duration: 0.3},
+                    {note: 'A4', duration: 0.3}, {note: 'G4', duration: 0.4}, {note: 'A4', duration: 0.4},
+                    {note: 'B4', duration: 0.4}, {note: 'G4', duration: 0.6}, {note: 'A4', duration: 0.3},
+                    {note: 'B4', duration: 0.3}, {note: 'C5', duration: 0.3}, {note: 'A4', duration: 0.3},
+                    {note: 'B4', duration: 0.6}, {note: 'C5', duration: 0.6}, {note: 'D5', duration: 0.3},
+                    {note: 'C5', duration: 0.3}, {note: 'B4', duration: 0.3}, {note: 'A4', duration: 0.3},
+                    {note: 'G4', duration: 0.4}, {note: 'F#4', duration: 0.4}, {note: 'G4', duration: 0.8}
+                ]
+            },
+            {
+                title: "Carol of the Bells",
+                meta: "Mykola Leontovych • Dynamic",
+                duration: 26,
+                notes: [
+                    {note: 'B4', duration: 0.25}, {note: 'A4', duration: 0.25}, {note: 'B4', duration: 0.25},
+                    {note: 'G4', duration: 0.5}, {note: 'B4', duration: 0.25}, {note: 'A4', duration: 0.25},
+                    {note: 'B4', duration: 0.25}, {note: 'G4', duration: 0.5}, {note: 'B4', duration: 0.25},
+                    {note: 'A4', duration: 0.25}, {note: 'B4', duration: 0.25}, {note: 'A4', duration: 0.25},
+                    {note: 'G4', duration: 0.25}, {note: 'F#4', duration: 0.25}, {note: 'G4', duration: 0.5},
+                    {note: 'E4', duration: 0.5}, {note: 'B4', duration: 0.25}, {note: 'A4', duration: 0.25},
+                    {note: 'B4', duration: 0.25}, {note: 'G4', duration: 0.5}, {note: 'B4', duration: 0.25},
+                    {note: 'A4', duration: 0.25}, {note: 'B4', duration: 0.25}, {note: 'G4', duration: 0.5}
+                ]
+            },
+            {
+                title: "The First Noel",
+                meta: "Traditional English • Serene",
+                duration: 30,
+                notes: [
+                    {note: 'E4', duration: 0.8}, {note: 'D4', duration: 0.8}, {note: 'C4', duration: 0.4},
+                    {note: 'D4', duration: 0.4}, {note: 'E4', duration: 0.4}, {note: 'F4', duration: 0.4},
+                    {note: 'G4', duration: 1.2}, {note: 'A4', duration: 0.4}, {note: 'B4', duration: 0.4},
+                    {note: 'C5', duration: 0.8}, {note: 'B4', duration: 0.4}, {note: 'A4', duration: 0.4},
+                    {note: 'G4', duration: 1.2}, {note: 'A4', duration: 0.4}, {note: 'B4', duration: 0.4},
+                    {note: 'C5', duration: 0.8}, {note: 'B4', duration: 0.4}, {note: 'A4', duration: 0.4},
+                    {note: 'B4', duration: 0.4}, {note: 'C5', duration: 0.4}, {note: 'D5', duration: 1.2},
+                    {note: 'C5', duration: 0.8}, {note: 'B4', duration: 0.4}, {note: 'A4', duration: 0.4},
+                    {note: 'G4', duration: 2
